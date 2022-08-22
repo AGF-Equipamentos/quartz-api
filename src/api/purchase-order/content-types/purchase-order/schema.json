@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "purchase_orders",
+  "info": {
+    "singularName": "purchase-order",
+    "pluralName": "purchase-orders",
+    "displayName": "Purchase Order ",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tags": {
+      "type": "string"
+    },
+    "observation": {
+      "type": "text"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "Aguardando aprovação",
+        "Aguardando envio ao fornecedor",
+        "Aguardando confirmação",
+        "Confirmado",
+        "Atrasado"
+      ]
+    },
+    "protheusNumber": {
+      "type": "uid"
+    }
+  }
+}
