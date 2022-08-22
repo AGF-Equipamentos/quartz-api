@@ -1,9 +1,15 @@
-module.exports = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
     routes: [
         {
             method: 'GET',
-            path: '/hello',
-            handler: 'hello.index',
+            path: '/protheus-order',
+            handler: 'protheus-order.index',
+            config: {
+                policies: [],
+                middlewares: [],
+            }
         }
     ]
 };
