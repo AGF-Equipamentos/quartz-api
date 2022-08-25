@@ -7,7 +7,6 @@ const axios_1 = __importDefault(require("axios"));
 exports.default = {
     async getProtheusOrders(ctx, next) {
         // puxar os pc(pedido de compras) do protheus
-        //const protheus = strapi.entityService.findMany('api::protheus-order.protheus-order')
         const { data: protheusOrders } = await axios_1.default.get(`${process.env.APP_PROTHEUS_API_URL}/purchases-grouped`, {
             params: {
                 branch: '0101'
@@ -16,10 +15,37 @@ exports.default = {
         // puxar os purchase orders
         const purchaseOrders = await strapi.entityService.findMany('api::purchase-order.purchase-order');
         // juntar os pc do protheus com os purchase orders
-        // protheusOrders.forEach((purchaseOrder) => {
-        //   // console.log(purchaseOrder.number)
+        const ordersUpdated = protheusOrders.map((protheusOrder) => {
+            const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number);
+            //  console.log(protheusOrder.provider_code)
+            if (purchaseOrder) {
+                return {
+                    number: protheusOrder.number,
+                    provider: protheusOrder.provider,
+                    tags: purchaseOrder.tags,
+                    observation: purchaseOrder.observation,
+                    delivery: protheusOrder.delivery,
+                    status: purchaseOrder.status,
+                    buyer: protheusOrder.buyer,
+                    approved: protheusOrder.approved
+                };
+            }
+            return {
+                number: protheusOrder.number,
+                provider: protheusOrder.provider,
+                tags: '',
+                observation: '',
+                delivery: protheusOrder.delivery,
+                status: '',
+                buyer: protheusOrder.buyer,
+                approved: protheusOrder.approved
+            };
+        });
+        // const order = ordersUpdated.map((status) => {
+        //   console.log(status.approved)
+        //   if(status.approved === 'no'){
+        //   }
         // })
-        // retornar tudo junto
-        return protheusOrders;
+        return ordersUpdated;
     },
 };
