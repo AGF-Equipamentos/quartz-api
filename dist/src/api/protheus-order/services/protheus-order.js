@@ -17,7 +17,15 @@ exports.default = {
         // juntar os pc do protheus com os purchase orders
         const ordersUpdated = protheusOrders.map((protheusOrder) => {
             const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number);
-            //  console.log(protheusOrder.provider_code)
+            const status = purchaseOrders.map((status) => {
+                if (protheusOrder.approved === 'yes' && status.status === '') {
+                    status.status = 'Aguardando envio ao fornecedor';
+                }
+            });
+            console.log(status);
+            // if(protheusOrder.approved === 'yes' && purchaseOrder.status === ''  ) {
+            //   purchaseOrder.status = 'Aguardando envio ao fornecedor'
+            // }
             if (purchaseOrder) {
                 return {
                     number: protheusOrder.number,
@@ -41,11 +49,7 @@ exports.default = {
                 approved: protheusOrder.approved
             };
         });
-        // const order = ordersUpdated.map((status) => {
-        //   console.log(status.approved)
-        //   if(status.approved === 'no'){
-        //   }
-        // })
+        //  console.log(ordersUpdated)
         return ordersUpdated;
     },
 };
