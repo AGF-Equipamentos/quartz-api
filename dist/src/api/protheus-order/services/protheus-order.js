@@ -16,15 +16,17 @@ exports.default = {
         const purchaseOrders = await strapi.entityService.findMany('api::purchase-order.purchase-order');
         // juntar os pc do protheus com os purchase orders
         const ordersUpdated = protheusOrders.map((protheusOrder) => {
+            let status = 'Aguardando aprovação';
             const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number);
-            const status = purchaseOrders.map((status) => {
-                if (protheusOrder.approved === 'yes' && status.status === '') {
-                    status.status = 'Aguardando envio ao fornecedor';
-                }
-            });
-            console.log(status);
-            // if(protheusOrder.approved === 'yes' && purchaseOrder.status === ''  ) {
-            //   purchaseOrder.status = 'Aguardando envio ao fornecedor'
+            if (protheusOrder.approved === 'yes') {
+                status = 'Aguardando envio ao fornecedor';
+            }
+            if (purchaseOrder && protheusOrder.approved === 'yes') {
+                status = purchaseOrder.status;
+            }
+            //Atrasado
+            // if(protheusOrder.delivery > Date.now() && protheusOrder.approved === 'yes') {
+            //   status = 'Atrasado'
             // }
             if (purchaseOrder) {
                 return {
@@ -33,7 +35,7 @@ exports.default = {
                     tags: purchaseOrder.tags,
                     observation: purchaseOrder.observation,
                     delivery: protheusOrder.delivery,
-                    status: purchaseOrder.status,
+                    status: status,
                     buyer: protheusOrder.buyer,
                     approved: protheusOrder.approved
                 };
@@ -44,7 +46,7 @@ exports.default = {
                 tags: '',
                 observation: '',
                 delivery: protheusOrder.delivery,
-                status: '',
+                status: status,
                 buyer: protheusOrder.buyer,
                 approved: protheusOrder.approved
             };
