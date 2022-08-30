@@ -13,7 +13,6 @@ type ProtheusOrder = {
   provider: string
   approved: string
   delivery: string 
-  // | number 
 }
 
 type PurchaseOrder = {
@@ -25,6 +24,22 @@ type PurchaseOrder = {
   createdAt: string
   updatedAt: string
 }
+
+// type UserOrder = {
+//   id: number
+//   username: string 
+//   email: string
+//   provider: string
+//   password: string
+//   resetPasswordToken: null,
+//   confirmationToken: null,
+//   confirmed: boolean ,
+//   blocked: boolean,
+//   createdAt: string
+//   updatedAt: string
+//   name: string
+//   protheusCode: string
+// }
 
 export default { 
   async getProtheusOrders(ctx, next ) { 
@@ -40,11 +55,23 @@ export default {
     // puxar os purchase orders
     const purchaseOrders: PurchaseOrder[] = await strapi.entityService.findMany('api::purchase-order.purchase-order')
 
+    const users = await strapi.db
+      .query('plugin::users-permissions.user')
+      .findMany({})
+
+      // const users: UserOrder[]  = await strapi.db
+      // .query('plugin::users-permissions.user')
+      // .findMany({})
+
+
     // juntar os pc do protheus com os purchase orders
-    
     const ordersUpdated = protheusOrders.map((protheusOrder) => {
       let status = 'Aguardando aprovação'
       const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number)
+      // const userOrder = users.find( userOrder => userOrder.protheusCode === protheusOrder.buyer)
+      
+
+      // const buyer = users.find(purchaseOrderBuyer => protheusOrder.provider_code === purchaseOrderBuyer)
       
 
       if(protheusOrder.approved === 'yes'){
@@ -54,10 +81,15 @@ export default {
       if(purchaseOrder && protheusOrder.approved === 'yes'){
         status = purchaseOrder.status
       }
+
+      const currentDate = new Date()
+
+      const delivery = new Date(protheusOrder.delivery)
+      
       //Atrasado
-      // if(protheusOrder.delivery > Date.now() && protheusOrder.approved === 'yes') {
-      //   status = 'Atrasado'
-      // }
+      if(delivery < currentDate && protheusOrder.approved === 'yes' ) {
+        status = 'Atrasado'
+      }
 
       if(purchaseOrder) {
        
