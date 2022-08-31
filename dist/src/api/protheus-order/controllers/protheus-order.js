@@ -10,4 +10,10 @@ exports.default = {
         const entity = await strapi.service('api::protheus-order.protheus-order').getProtheusOrders();
         return entity;
     },
+    async update(ctx, next) {
+        //  const purchaseOrder = await strapi.entityService.findMany('api::purchase-order.purchase-order', {
+        //   fields: ['protheusNumber', 'tags', 'observation', 'status']
+        //  })
+        return { ok: true };
+    }
 };

@@ -8,7 +8,16 @@ export default {
     console.log(ctx.request.body)
     // ctx.body = 'Hello World!'; // we could also send a JSON
     const entity = await strapi.service<ProtheusOrderServiceProps>('api::protheus-order.protheus-order').getProtheusOrders()
-
+   
     return entity
   },
+  async update(ctx, next) {
+     
+  //  const purchaseOrder = await strapi.entityService.findMany('api::purchase-order.purchase-order', {
+  //   fields: ['protheusNumber', 'tags', 'observation', 'status']
+  //  })
+
+   
+    return {ok: true}
+  }
 };

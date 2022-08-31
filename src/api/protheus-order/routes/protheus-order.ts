@@ -8,6 +8,15 @@ export default {
           policies: [],
           middlewares: [],
       }
+    },
+    {
+      method: 'PUT',
+      path: '/protheus-order',
+      handler: 'protheus-order.update',
+      config: {
+          policies: [],
+          middlewares: [],
+      }
     }
   ]
 }

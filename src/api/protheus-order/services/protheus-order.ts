@@ -2,6 +2,7 @@ import axios from 'axios'
 
 export interface ProtheusOrderServiceProps {
   getProtheusOrders: () => {}
+  updatePurchaseOrder: ( parameters: string) => {}
 
 }
 
@@ -25,24 +26,24 @@ type PurchaseOrder = {
   updatedAt: string
 }
 
-// type UserOrder = {
-//   id: number
-//   username: string 
-//   email: string
-//   provider: string
-//   password: string
-//   resetPasswordToken: null,
-//   confirmationToken: null,
-//   confirmed: boolean ,
-//   blocked: boolean,
-//   createdAt: string
-//   updatedAt: string
-//   name: string
-//   protheusCode: string
-// }
+type UserOrder = {
+  id: number
+  username: string 
+  email: string
+  provider: string
+  password: string
+  resetPasswordToken: null
+  confirmationToken: null
+  confirmed: boolean
+  blocked: boolean
+  createdAt: string
+  updatedAt: string
+  name: string
+  protheusCode: string
+}
 
 export default { 
-  async getProtheusOrders(ctx, next ) { 
+  async getProtheusOrders() { 
 
     // puxar os pc(pedido de compras) do protheus
     const { data: protheusOrders } = await axios.get<ProtheusOrder[]>(`${process.env.APP_PROTHEUS_API_URL}/purchases-grouped`, {
@@ -54,26 +55,30 @@ export default {
       
     // puxar os purchase orders
     const purchaseOrders: PurchaseOrder[] = await strapi.entityService.findMany('api::purchase-order.purchase-order')
+      
 
-    const users = await strapi.db
+      const users: UserOrder[]  = await strapi.db
       .query('plugin::users-permissions.user')
-      .findMany({})
-
-      // const users: UserOrder[]  = await strapi.db
-      // .query('plugin::users-permissions.user')
-      // .findMany({})
+      .findMany({
+        where: {
+          protheusCode: {
+            $null: false 
+          }
+        }
+      })
 
 
     // juntar os pc do protheus com os purchase orders
-    const ordersUpdated = protheusOrders.map((protheusOrder) => {
+      const ordersUpdated = protheusOrders.map((protheusOrder) => {
       let status = 'Aguardando aprovação'
       const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number)
-      // const userOrder = users.find( userOrder => userOrder.protheusCode === protheusOrder.buyer)
+      const userOrder = users.find( userOrder => userOrder.protheusCode === protheusOrder.buyer)
+          console.log(purchaseOrders)
+      // console.log(users)
+      if(userOrder) {
+        protheusOrder.buyer = userOrder.name
+      }
       
-
-      // const buyer = users.find(purchaseOrderBuyer => protheusOrder.provider_code === purchaseOrderBuyer)
-      
-
       if(protheusOrder.approved === 'yes'){
         status = 'Aguardando envio ao fornecedor'
       }
@@ -119,11 +124,18 @@ export default {
        
     })
    
-    
-  //  console.log(ordersUpdated)
     return ordersUpdated
   },
 
-
+  async updatePurchaseOrder() {
+    
+    // chamar os purchase Orders
+    const purchaseOrder: PurchaseOrder = await strapi.entityService.findMany('api::purchase-order.purchase-order') 
+   
+    
+    // verificar se tem algum com o protheusNumber que foi passado
+    // se tiver, vc vai atualizar o registro
+    // se não tiver, vc vai criar um registro
+  }
  
 };
