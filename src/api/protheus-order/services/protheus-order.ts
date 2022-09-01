@@ -1,9 +1,17 @@
 import axios from 'axios'
+import purchaseOrder from '../../purchase-order/controllers/purchase-order'
+
 
 export interface ProtheusOrderServiceProps {
   getProtheusOrders: () => {}
-  updatePurchaseOrder: ( parameters: string) => {}
+  updatePurchaseOrder: (data: UpdatePurchaseOrderProps) => {}
+}
 
+type UpdatePurchaseOrderProps = {
+  protheusNumber: string
+  tags: string
+  observation: string
+  status: string
 }
 
 type ProtheusOrder = {
@@ -73,7 +81,7 @@ export default {
       let status = 'Aguardando aprovação'
       const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number)
       const userOrder = users.find( userOrder => userOrder.protheusCode === protheusOrder.buyer)
-          console.log(purchaseOrders)
+          // console.log(purchaseOrders)
       // console.log(users)
       if(userOrder) {
         protheusOrder.buyer = userOrder.name
@@ -127,15 +135,35 @@ export default {
     return ordersUpdated
   },
 
-  async updatePurchaseOrder() {
-    
-    // chamar os purchase Orders
-    const purchaseOrder: PurchaseOrder = await strapi.entityService.findMany('api::purchase-order.purchase-order') 
+  async updatePurchaseOrder(data: UpdatePurchaseOrderProps) {
+  
    
+    // chamar os purchase Orders
+   
+    const purchaseOrder: PurchaseOrder = await strapi.entityService.findOne('api::purchase-order.purchase-order', {
+      fields: ['tags', 'observation', 'protheusNumber', 'status']
+    }) 
+
+
+   // console.log(purchaseOrder)
+    // const purchaseOrder: PurchaseOrder[] = await strapi.entityService.findMany('api::purchase-order.purchase-order',{
+    //   fields: ['tags', 'observation', 'protheusNumber', 'status']
+    // }) 
+    // const purchase = purchaseOrder.map((purchase) => {
+    //   if(data.protheusNumber === purchase.protheusNumber){
+    //     return {
+    //       tags: data.tags,
+    //       observation: data.observation,
+    //       status:  data.status,
+    //     }      
+    //   }
     
-    // verificar se tem algum com o protheusNumber que foi passado
-    // se tiver, vc vai atualizar o registro
-    // se não tiver, vc vai criar um registro
+    // })
+      // data.protheusNumber => tentar achar um purchase
+    // se vc achar, vc vai atualizar ele ()
+    // se não achar, vc cria um
+
+    //  return purchase
+    
   }
- 
 };

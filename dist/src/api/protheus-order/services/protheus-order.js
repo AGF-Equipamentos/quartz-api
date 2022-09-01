@@ -28,7 +28,7 @@ exports.default = {
             let status = 'Aguardando aprovação';
             const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number);
             const userOrder = users.find(userOrder => userOrder.protheusCode === protheusOrder.buyer);
-            console.log(purchaseOrders);
+            // console.log(purchaseOrders)
             // console.log(users)
             if (userOrder) {
                 protheusOrder.buyer = userOrder.name;
@@ -70,11 +70,27 @@ exports.default = {
         });
         return ordersUpdated;
     },
-    async updatePurchaseOrder() {
+    async updatePurchaseOrder(data) {
         // chamar os purchase Orders
-        const purchaseOrder = await strapi.entityService.findMany('api::purchase-order.purchase-order');
-        // verificar se tem algum com o protheusNumber que foi passado
-        // se tiver, vc vai atualizar o registro
-        // se não tiver, vc vai criar um registro
+        const purchaseOrder = await strapi.entityService.findOne('api::purchase-order.purchase-order', {
+            fields: ['tags', 'observation', 'protheusNumber', 'status']
+        });
+        // console.log(purchaseOrder)
+        // const purchaseOrder: PurchaseOrder[] = await strapi.entityService.findMany('api::purchase-order.purchase-order',{
+        //   fields: ['tags', 'observation', 'protheusNumber', 'status']
+        // }) 
+        // const purchase = purchaseOrder.map((purchase) => {
+        //   if(data.protheusNumber === purchase.protheusNumber){
+        //     return {
+        //       tags: data.tags,
+        //       observation: data.observation,
+        //       status:  data.status,
+        //     }      
+        //   }
+        // })
+        // data.protheusNumber => tentar achar um purchase
+        // se vc achar, vc vai atualizar ele ()
+        // se não achar, vc cria um
+        //  return purchase
     }
 };
