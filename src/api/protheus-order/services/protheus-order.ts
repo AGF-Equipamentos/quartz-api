@@ -1,5 +1,6 @@
 import axios from 'axios'
 import purchaseOrder from '../../purchase-order/controllers/purchase-order'
+// import purchaseOrder from '../../purchase-order/controllers/purchase-order'
 
 
 export interface ProtheusOrderServiceProps {
@@ -8,6 +9,7 @@ export interface ProtheusOrderServiceProps {
 }
 
 type UpdatePurchaseOrderProps = {
+  id: number
   protheusNumber: string
   tags: string
   observation: string
@@ -81,8 +83,8 @@ export default {
       let status = 'Aguardando aprovação'
       const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number)
       const userOrder = users.find( userOrder => userOrder.protheusCode === protheusOrder.buyer)
-          // console.log(purchaseOrders)
-      // console.log(users)
+       
+      
       if(userOrder) {
         protheusOrder.buyer = userOrder.name
       }
@@ -107,6 +109,7 @@ export default {
       if(purchaseOrder) {
        
         return {
+          id: purchaseOrder.id,
           number: protheusOrder.number,
           provider: protheusOrder.provider,
           tags: purchaseOrder.tags,
@@ -120,6 +123,7 @@ export default {
       }
       
       return {
+        id:'',
         number: protheusOrder.number,
         provider: protheusOrder.provider,
         tags: '',
@@ -136,34 +140,21 @@ export default {
   },
 
   async updatePurchaseOrder(data: UpdatePurchaseOrderProps) {
-  
-   
-    // chamar os purchase Orders
-   
-    const purchaseOrder: PurchaseOrder = await strapi.entityService.findOne('api::purchase-order.purchase-order', {
-      fields: ['tags', 'observation', 'protheusNumber', 'status']
-    }) 
 
+    // chamar os purchase Orders 
 
-   // console.log(purchaseOrder)
-    // const purchaseOrder: PurchaseOrder[] = await strapi.entityService.findMany('api::purchase-order.purchase-order',{
-    //   fields: ['tags', 'observation', 'protheusNumber', 'status']
-    // }) 
-    // const purchase = purchaseOrder.map((purchase) => {
-    //   if(data.protheusNumber === purchase.protheusNumber){
-    //     return {
-    //       tags: data.tags,
-    //       observation: data.observation,
-    //       status:  data.status,
-    //     }      
-    //   }
-    
-    // })
+     const purchaseOrder: PurchaseOrder[]= await strapi.entityService.findOne('api::purchase-order.purchase-order', data.id,{
+       fields: ['protheusNumber', 'tags', 'observation', 'status']
+     })
+
+    //  console.log(purchaseOrder)
+     
+    //  if(data.protheusNumber)
       // data.protheusNumber => tentar achar um purchase
     // se vc achar, vc vai atualizar ele ()
     // se não achar, vc cria um
 
-    //  return purchase
+    // return purchaseOrder
     
   }
 };
