@@ -1,8 +1,4 @@
 import axios from 'axios'
-import purchaseOrder from '../../purchase-order/controllers/purchase-order'
-// import purchaseOrder from '../../purchase-order/controllers/purchase-order'
-
-
 export interface ProtheusOrderServiceProps {
   getProtheusOrders: () => {}
   updatePurchaseOrder: (data: UpdatePurchaseOrderProps) => {}
@@ -54,7 +50,6 @@ type UserOrder = {
 
 export default { 
   async getProtheusOrders() { 
-
     // puxar os pc(pedido de compras) do protheus
     const { data: protheusOrders } = await axios.get<ProtheusOrder[]>(`${process.env.APP_PROTHEUS_API_URL}/purchases-grouped`, {
       params: {
@@ -102,7 +97,7 @@ export default {
       const delivery = new Date(protheusOrder.delivery)
       
       //Atrasado
-      if(delivery < currentDate && protheusOrder.approved === 'yes' ) {
+      if(delivery < currentDate && protheusOrder.approved === 'yes') {
         status = 'Atrasado'
       }
 
@@ -123,7 +118,7 @@ export default {
       }
       
       return {
-        id:'',
+        id: null,
         number: protheusOrder.number,
         provider: protheusOrder.provider,
         tags: '',
@@ -140,17 +135,31 @@ export default {
   },
 
   async updatePurchaseOrder(data: UpdatePurchaseOrderProps) {
-
-    // chamar os purchase Orders 
-
-     const purchaseOrder: PurchaseOrder[]= await strapi.entityService.findOne('api::purchase-order.purchase-order', data.id,{
-       fields: ['protheusNumber', 'tags', 'observation', 'status']
-     })
-
-    //  console.log(purchaseOrder)
-     
-    //  if(data.protheusNumber)
-      // data.protheusNumber => tentar achar um purchase
+    if(data.id) {
+     const purchaseUpdate: PurchaseOrder = await strapi.entityService.update('api::purchase-order.purchase-order', data.id, {
+      data: {
+        tags: data.tags,
+        observation: data.observation,
+        status: data.status
+      },
+      fields: ['id', 'protheusNumber', 'tags', 'observation', 'status']
+     })  
+     return purchaseUpdate
+    } 
+     else {
+       const purchaseCreate: PurchaseOrder = await strapi.entityService.create('api::purchase-order.purchase-order', {
+         data: {
+           protheusNumber: data.protheusNumber,
+           tags: data.tags,
+           observation: data.observation,
+           status: data.status
+         },
+         fields: ['id', 'protheusNumber', 'tags', 'observation', 'status']
+       })
+       return purchaseCreate
+     }
+    // chamar os purchase Orders
+    // data.protheusNumber => tentar achar um purchase
     // se vc achar, vc vai atualizar ele ()
     // se não achar, vc cria um
 

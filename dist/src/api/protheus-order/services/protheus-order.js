@@ -57,7 +57,7 @@ exports.default = {
                 };
             }
             return {
-                id: '',
+                id: null,
                 number: protheusOrder.number,
                 provider: protheusOrder.provider,
                 tags: '',
@@ -71,12 +71,30 @@ exports.default = {
         return ordersUpdated;
     },
     async updatePurchaseOrder(data) {
-        // chamar os purchase Orders 
-        const purchaseOrder = await strapi.entityService.findOne('api::purchase-order.purchase-order', data.id, {
-            fields: ['protheusNumber', 'tags', 'observation', 'status']
-        });
-        //  console.log(purchaseOrder)
-        //  if(data.protheusNumber)
+        if (data.id) {
+            const purchaseUpdate = await strapi.entityService.update('api::purchase-order.purchase-order', data.id, {
+                data: {
+                    tags: data.tags,
+                    observation: data.observation,
+                    status: data.status
+                },
+                fields: ['id', 'protheusNumber', 'tags', 'observation', 'status']
+            });
+            return purchaseUpdate;
+        }
+        else {
+            const purchaseCreate = await strapi.entityService.create('api::purchase-order.purchase-order', {
+                data: {
+                    protheusNumber: data.protheusNumber,
+                    tags: data.tags,
+                    observation: data.observation,
+                    status: data.status
+                },
+                fields: ['id', 'protheusNumber', 'tags', 'observation', 'status']
+            });
+            return purchaseCreate;
+        }
+        // chamar os purchase Orders
         // data.protheusNumber => tentar achar um purchase
         // se vc achar, vc vai atualizar ele ()
         // se não achar, vc cria um
