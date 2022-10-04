@@ -19,12 +19,12 @@ type ProtheusOrder = {
   provider_code: string
   provider: string
   approved: string
-  delivery: string 
+  delivery: string
 }
 
 type PurchaseOrder = {
   id: number
-  tags: string 
+  tags: string
   observation: string
   protheusNumber: string
   status: string
@@ -34,7 +34,7 @@ type PurchaseOrder = {
 
 type UserOrder = {
   id: number
-  username: string 
+  username: string
   email: string
   provider: string
   password: string
@@ -48,8 +48,8 @@ type UserOrder = {
   protheusCode: string
 }
 
-export default { 
-  async getProtheusOrders() { 
+export default {
+  async getProtheusOrders() {
     // puxar os pc(pedido de compras) do protheus
     const { data: protheusOrders } = await axios.get<ProtheusOrder[]>(`${process.env.APP_PROTHEUS_API_URL}/purchases-grouped`, {
       params: {
@@ -57,17 +57,17 @@ export default {
       }
     })
 
-      
+
     // puxar os purchase orders
     const purchaseOrders: PurchaseOrder[] = await strapi.entityService.findMany('api::purchase-order.purchase-order')
-      
+
 
       const users: UserOrder[]  = await strapi.db
       .query('plugin::users-permissions.user')
       .findMany({
         where: {
           protheusCode: {
-            $null: false 
+            $null: false
           }
         }
       })
@@ -78,12 +78,12 @@ export default {
       let status = 'Aguardando aprovação'
       const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number)
       const userOrder = users.find( userOrder => userOrder.protheusCode === protheusOrder.buyer)
-       
-      
+
+
       if(userOrder) {
         protheusOrder.buyer = userOrder.name
       }
-      
+
       if(protheusOrder.approved === 'yes'){
         status = 'Aguardando envio ao fornecedor'
       }
@@ -95,14 +95,21 @@ export default {
       const currentDate = new Date()
 
       const delivery = new Date(protheusOrder.delivery)
-      
+      console.log(delivery)
       //Atrasado
       if(delivery < currentDate && protheusOrder.approved === 'yes') {
         status = 'Atrasado'
+        if(purchaseOrder){
+          status = purchaseOrder.status
+          if(status === 'Confirmado'){
+            status = 'Atrasado'
+          }
+        }
       }
 
+
       if(purchaseOrder) {
-       
+
         return {
           id: purchaseOrder.id,
           number: protheusOrder.number,
@@ -114,9 +121,9 @@ export default {
           buyer: protheusOrder.buyer,
           approved: protheusOrder.approved
         }
-        
+
       }
-      
+
       return {
         id: null,
         number: protheusOrder.number,
@@ -127,10 +134,10 @@ export default {
         status: status,
         buyer: protheusOrder.buyer,
         approved: protheusOrder.approved
-      } 
-       
+      }
+
     })
-   
+
     return ordersUpdated
   },
 
@@ -143,9 +150,9 @@ export default {
         status: data.status
       },
       fields: ['id', 'protheusNumber', 'tags', 'observation', 'status']
-     })  
+     })
      return purchaseUpdate
-    } 
+    }
      else {
        const purchaseCreate: PurchaseOrder = await strapi.entityService.create('api::purchase-order.purchase-order', {
          data: {
@@ -164,6 +171,6 @@ export default {
     // se não achar, vc cria um
 
     // return purchaseOrder
-    
+
   }
 };

@@ -39,9 +39,16 @@ exports.default = {
             }
             const currentDate = new Date();
             const delivery = new Date(protheusOrder.delivery);
+            console.log(delivery);
             //Atrasado
             if (delivery < currentDate && protheusOrder.approved === 'yes') {
                 status = 'Atrasado';
+                if (purchaseOrder) {
+                    status = purchaseOrder.status;
+                    if (status === 'Confirmado') {
+                        status = 'Atrasado';
+                    }
+                }
             }
             if (purchaseOrder) {
                 return {
