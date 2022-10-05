@@ -95,7 +95,7 @@ export default {
       const currentDate = new Date()
 
       const delivery = new Date(protheusOrder.delivery)
-      console.log(delivery)
+
       //Atrasado
       if(delivery < currentDate && protheusOrder.approved === 'yes') {
         status = 'Atrasado'
@@ -116,7 +116,7 @@ export default {
           provider: protheusOrder.provider,
           tags: purchaseOrder.tags,
           observation: purchaseOrder.observation,
-          delivery: protheusOrder.delivery,
+          delivery: protheusOrder.delivery.slice(0, -1),
           status: status,
           buyer: protheusOrder.buyer,
           approved: protheusOrder.approved
@@ -130,7 +130,7 @@ export default {
         provider: protheusOrder.provider,
         tags: '',
         observation: '',
-        delivery: protheusOrder.delivery,
+        delivery: protheusOrder.delivery.slice(0, -1),
         status: status,
         buyer: protheusOrder.buyer,
         approved: protheusOrder.approved
