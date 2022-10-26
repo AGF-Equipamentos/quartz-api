@@ -1,8 +1,4 @@
 import axios from 'axios'
-export interface ProtheusOrderServiceProps {
-  getProtheusOrders: () => {}
-  updatePurchaseOrder: (data: UpdatePurchaseOrderProps) => {}
-}
 
 type UpdatePurchaseOrderProps = {
   id: number
