@@ -158,7 +158,6 @@ export default {
          },
          fields: ['id', 'protheusNumber', 'tags', 'observation', 'status']
        })
-       // Não deu muito certo
        return purchaseCreate
      }
   }
