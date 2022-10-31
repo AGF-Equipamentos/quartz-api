@@ -46,7 +46,7 @@ type UserOrder = {
 
 export default {
   async getProtheusOrders() {
-    // puxar os pc(pedido de compras) do protheus
+
     const { data: protheusOrders } = await axios.get<ProtheusOrder[]>(`${process.env.APP_PROTHEUS_API_URL}/purchases-grouped`, {
       params: {
         branch: '0101'
@@ -54,7 +54,7 @@ export default {
     })
 
 
-    // puxar os purchase orders
+
     const purchaseOrders: PurchaseOrder[] = await strapi.entityService.findMany('api::purchase-order.purchase-order')
 
 
@@ -69,7 +69,6 @@ export default {
       })
 
 
-    // juntar os pc do protheus com os purchase orders
       const ordersUpdated = protheusOrders.map((protheusOrder) => {
       let status = 'Aguardando aprovação'
       const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number)
