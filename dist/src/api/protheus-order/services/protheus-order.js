@@ -6,13 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 exports.default = {
     async getProtheusOrders() {
-        // puxar os pc(pedido de compras) do protheus
         const { data: protheusOrders } = await axios_1.default.get(`${process.env.APP_PROTHEUS_API_URL}/purchases-grouped`, {
             params: {
                 branch: '0101'
             }
         });
-        // puxar os purchase orders
         const purchaseOrders = await strapi.entityService.findMany('api::purchase-order.purchase-order');
         const users = await strapi.db
             .query('plugin::users-permissions.user')
@@ -23,7 +21,6 @@ exports.default = {
                 }
             }
         });
-        // juntar os pc do protheus com os purchase orders
         const ordersUpdated = protheusOrders.map((protheusOrder) => {
             let status = 'Aguardando aprovação';
             const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number);

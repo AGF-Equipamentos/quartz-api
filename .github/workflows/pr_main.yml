@@ -29,24 +29,3 @@ jobs:
         ADMIN_JWT_SECRET: ${{secrets.ADMIN_JWT_SECRET}}
         JWT_SECRET: ${{secrets.JWT_SECRET}}
         APP_PROTHEUS_API_URL: ${{secrets.APP_PROTHEUS_API_URL}}
-
-    - name: Copy project to AGF
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        port: ${{ secrets.SSH_PORT }}
-        password: ${{ secrets.SSH_PASS }}
-        source: "."
-        target: "~/app/quartz-api"
-
-    - name: Run production scripts
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        port: ${{ secrets.SSH_PORT }}
-        password: ${{ secrets.SSH_PASS }}
-        script: |
-          cd ~/app/quartz-api
-          pm2 restart quartz-api
