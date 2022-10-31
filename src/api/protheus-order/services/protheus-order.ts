@@ -158,7 +158,6 @@ export default {
          },
          fields: ['id', 'protheusNumber', 'tags', 'observation', 'status']
        })
-       // deu tudo certo
        return purchaseCreate
      }
   }
