@@ -53,10 +53,7 @@ export default {
       }
     })
 
-
-
     const purchaseOrders: PurchaseOrder[] = await strapi.entityService.findMany('api::purchase-order.purchase-order')
-
 
       const users: UserOrder[]  = await strapi.db
       .query('plugin::users-permissions.user')
@@ -74,7 +71,6 @@ export default {
       const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number)
       const userOrder = users.find( userOrder => userOrder.protheusCode === protheusOrder.buyer)
 
-
       if(userOrder) {
         protheusOrder.buyer = userOrder.name
       }
@@ -86,11 +82,8 @@ export default {
       if(purchaseOrder && protheusOrder.approved === 'yes'){
         status = purchaseOrder.status
       }
-
       const currentDate = new Date()
-
       const delivery = new Date(protheusOrder.delivery)
-
 
       if(delivery < currentDate && protheusOrder.approved === 'yes') {
         status = 'Atrasado'
@@ -102,9 +95,7 @@ export default {
         }
       }
 
-
       if(purchaseOrder) {
-
         return {
           id: purchaseOrder.id,
           number: protheusOrder.number,
@@ -116,9 +107,7 @@ export default {
           buyer: protheusOrder.buyer,
           approved: protheusOrder.approved
         }
-
       }
-
       return {
         id: null,
         number: protheusOrder.number,
@@ -130,7 +119,6 @@ export default {
         buyer: protheusOrder.buyer,
         approved: protheusOrder.approved
       }
-
     })
 
     return ordersUpdated
