@@ -6,7 +6,7 @@
   },
   "include": [
     "./",
-    "src/**/*.json"
+    "src/**/*.json",
   ],
   "exclude": [
     "node_modules/",

@@ -36,7 +36,6 @@ exports.default = {
             }
             const currentDate = new Date();
             const delivery = new Date(protheusOrder.delivery);
-            //Atrasado
             if (delivery < currentDate && protheusOrder.approved === 'yes') {
                 status = 'Atrasado';
                 if (purchaseOrder) {
@@ -97,10 +96,5 @@ exports.default = {
             });
             return purchaseCreate;
         }
-        // chamar os purchase Orders
-        // data.protheusNumber => tentar achar um purchase
-        // se vc achar, vc vai atualizar ele ()
-        // se não achar, vc cria um
-        // return purchaseOrder
     }
 };
