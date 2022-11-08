@@ -26,27 +26,20 @@ exports.default = {
         // juntar os pc do protheus com os purchase orders
         const ordersUpdated = protheusOrders.map((protheusOrder) => {
             let status = 'Aguardando aprovação';
-            const purchaseOrder = purchaseOrders.find(purchaseOrder => purchaseOrder.protheusNumber === protheusOrder.number);
-            const userOrder = users.find(userOrder => userOrder.protheusCode === protheusOrder.buyer);
+            const purchaseOrder = purchaseOrders.find((purchaseOrder) => purchaseOrder.protheusNumber === protheusOrder.number);
+            const userOrder = users.find((userOrder) => userOrder.protheusCode === protheusOrder.buyer);
             if (userOrder) {
                 protheusOrder.buyer = userOrder.name;
             }
             if (protheusOrder.approved === 'yes') {
                 status = 'Aguardando envio ao fornecedor';
-            }
-            if (purchaseOrder && protheusOrder.approved === 'yes') {
-                status = purchaseOrder.status;
-            }
-            const currentDate = new Date();
-            const delivery = new Date(protheusOrder.delivery);
-            //Atrasado
-            if (delivery < currentDate && protheusOrder.approved === 'yes') {
-                status = 'Atrasado';
-                if (purchaseOrder) {
+                if (purchaseOrder && protheusOrder.approved === 'yes') {
                     status = purchaseOrder.status;
-                    if (status === 'Confirmado') {
-                        status = 'Atrasado';
-                    }
+                }
+                const currentDate = new Date();
+                const delivery = new Date(protheusOrder.delivery);
+                if (delivery < currentDate && (purchaseOrder === null || purchaseOrder === void 0 ? void 0 : purchaseOrder.status) === 'Confirmado') {
+                    status = 'Atrasado';
                 }
             }
             if (purchaseOrder) {
@@ -100,10 +93,5 @@ exports.default = {
             });
             return purchaseCreate;
         }
-        // chamar os purchase Orders
-        // data.protheusNumber => tentar achar um purchase
-        // se vc achar, vc vai atualizar ele ()
-        // se não achar, vc cria um
-        // return purchaseOrder
     }
 };

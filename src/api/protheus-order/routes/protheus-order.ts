@@ -5,8 +5,8 @@ export default {
       path: '/protheus-order',
       handler: 'protheus-order.index',
       config: {
-          policies: [],
-          middlewares: [],
+        policies: [],
+        middlewares: []
       }
     },
     {
@@ -14,10 +14,9 @@ export default {
       path: '/protheus-order',
       handler: 'protheus-order.update',
       config: {
-          policies: [],
-          middlewares: [],
+        policies: [],
+        middlewares: []
       }
     }
   ]
 }
- 
