@@ -8,7 +8,7 @@ exports.default = {
             handler: 'protheus-order.index',
             config: {
                 policies: [],
-                middlewares: [],
+                middlewares: []
             }
         },
         {
@@ -17,7 +17,7 @@ exports.default = {
             handler: 'protheus-order.update',
             config: {
                 policies: [],
-                middlewares: [],
+                middlewares: []
             }
         }
     ]
